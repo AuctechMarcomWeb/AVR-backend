@@ -59,19 +59,8 @@ const portfolioSchema = new mongoose.Schema(
 
     galleryImages: [
       {
-        image: {
-          type: String,
-          required: true,
-        },
-        altText: {
-          type: String,
-          trim: true,
-        },
-        order: {
-          type: Number,
-          default: 0,
-        },
-      },
+        type: String,
+      }
     ],
 
     featured: {
