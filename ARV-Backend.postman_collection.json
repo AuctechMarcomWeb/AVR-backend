@@ -1,0 +1,552 @@
+{
+  "info": {
+    "_postman_id": "avr-backend-collection-2026",
+    "name": "AVR Backend API",
+    "description": "Complete API collection for AVR Backend — Auth, Blog, Gallery, Portfolio, Testimonials, HomeSlider, Comments, Contact, Book Consultation, Dashboard, Upload",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register or Login (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/registerOrLogin", "host": ["{{baseUrl}}"], "path": ["api","auth","registerOrLogin"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\"\n}" }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/verifyOtp", "host": ["{{baseUrl}}"], "path": ["api","auth","verifyOtp"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"1234\"\n}" }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/resendOtp", "host": ["{{baseUrl}}"], "path": ["api","auth","resendOtp"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\"\n}" }
+          }
+        },
+        {
+          "name": "Login With Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/loginWithPassword", "host": ["{{baseUrl}}"], "path": ["api","auth","loginWithPassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"password\": \"yourpassword\"\n}" }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/profile", "host": ["{{baseUrl}}"], "path": ["api","auth","profile"] }
+          }
+        },
+        {
+          "name": "Create Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/createPassword", "host": ["{{baseUrl}}"], "path": ["api","auth","createPassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"password\": \"newpassword\"\n}" }
+          }
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/updatePassword", "host": ["{{baseUrl}}"], "path": ["api","auth","updatePassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"oldPassword\": \"old\",\n  \"newPassword\": \"newpass\"\n}" }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/resetPassword", "host": ["{{baseUrl}}"], "path": ["api","auth","resetPassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"password\": \"resetpassword\"\n}" }
+          }
+        },
+        {
+          "name": "Create User (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/createUser", "host": ["{{baseUrl}}"], "path": ["api","auth","createUser"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"gender\": \"Male\",\n  \"role\": \"Admin\",\n  \"password\": \"securepass\"\n}" }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/auth/getAllUsers?page=1&limit=10&search=&sortBy=recent", "host": ["{{baseUrl}}"], "path": ["api","auth","getAllUsers"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"search","value":""},{"key":"sortBy","value":"recent"}] }
+          }
+        },
+        {
+          "name": "Update User By ID",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/update/:id", "host": ["{{baseUrl}}"], "path": ["api","auth","update",":id"], "variable": [{"key":"id","value":"USER_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}" }
+          }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/updateRole/:userId", "host": ["{{baseUrl}}"], "path": ["api","auth","updateRole",":userId"], "variable": [{"key":"userId","value":"USER_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"Admin\"\n}" }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/delete/:id", "host": ["{{baseUrl}}"], "path": ["api","auth","delete",":id"], "variable": [{"key":"id","value":"USER_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/upload/uploadImage", "host": ["{{baseUrl}}"], "path": ["api","upload","uploadImage"] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": "" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "Get All Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/blogs?page=1&limit=10&sortBy=recent&isActive=true", "host": ["{{baseUrl}}"], "path": ["api","blogs"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"sortBy","value":"recent"},{"key":"isActive","value":"true"},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Blog By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/blogs/:id", "host": ["{{baseUrl}}"], "path": ["api","blogs",":id"], "variable": [{"key":"id","value":"BLOG_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Create Blog (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/blogs", "host": ["{{baseUrl}}"], "path": ["api","blogs"] },
+            "body": { "mode": "raw", "raw": "{\n  \"url\": \"my-first-blog\",\n  \"heading\": \"My First Blog\",\n  \"seoTitle\": \"My First Blog | AVR\",\n  \"metaKeywords\": \"blog, avr, design\",\n  \"shortDescription\": \"A short intro to this blog.\",\n  \"mainImage\": \"https://res.cloudinary.com/demo/image/upload/sample.jpg\",\n  \"multipleImages\": [],\n  \"mainImageName\": \"sample\",\n  \"details\": \"Full blog content here...\",\n  \"isActive\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Blog (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/blogs/:id", "host": ["{{baseUrl}}"], "path": ["api","blogs",":id"], "variable": [{"key":"id","value":"BLOG_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"heading\": \"Updated Blog Title\",\n  \"isActive\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Blog (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/blogs/:id", "host": ["{{baseUrl}}"], "path": ["api","blogs",":id"], "variable": [{"key":"id","value":"BLOG_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/comments", "host": ["{{baseUrl}}"], "path": ["api","comments"] },
+            "body": { "mode": "raw", "raw": "{\n  \"blogId\": \"BLOG_ID_HERE\",\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"message\": \"Great article!\"\n}" }
+          }
+        },
+        {
+          "name": "Get All Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/comments?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["api","comments"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Comments By Blog",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/comments/blog/:blogId", "host": ["{{baseUrl}}"], "path": ["api","comments","blog",":blogId"], "variable": [{"key":"blogId","value":"BLOG_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Update Comment (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/comments/:id", "host": ["{{baseUrl}}"], "path": ["api","comments",":id"], "variable": [{"key":"id","value":"COMMENT_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"isActive\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Comment (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/comments/:id", "host": ["{{baseUrl}}"], "path": ["api","comments",":id"], "variable": [{"key":"id","value":"COMMENT_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gallery",
+      "item": [
+        {
+          "name": "Get All Gallery",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/gallery?page=1&limit=10&isActive=true&sortBy=recent", "host": ["{{baseUrl}}"], "path": ["api","gallery"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"isActive","value":"true"},{"key":"sortBy","value":"recent"},{"key":"serviceType","value":"","disabled":true},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Gallery Item By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/gallery/:id", "host": ["{{baseUrl}}"], "path": ["api","gallery",":id"], "variable": [{"key":"id","value":"GALLERY_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Create Gallery Item (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/gallery", "host": ["{{baseUrl}}"], "path": ["api","gallery"] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Living Room Design\",\n  \"url\": \"https://res.cloudinary.com/demo/image/upload/sample.jpg\",\n  \"serviceType\": \"Interior\",\n  \"isActive\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Gallery Item (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/gallery/:id", "host": ["{{baseUrl}}"], "path": ["api","gallery",":id"], "variable": [{"key":"id","value":"GALLERY_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Title\",\n  \"isActive\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Gallery Item (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/gallery/:id", "host": ["{{baseUrl}}"], "path": ["api","gallery",":id"], "variable": [{"key":"id","value":"GALLERY_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Home Slider",
+      "item": [
+        {
+          "name": "Get All Sliders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/homeSlider?page=1&limit=10&isActive=true&sortBy=recent", "host": ["{{baseUrl}}"], "path": ["api","homeSlider"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"isActive","value":"true"},{"key":"sortBy","value":"recent"}] }
+          }
+        },
+        {
+          "name": "Get Slider By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/homeSlider/:id", "host": ["{{baseUrl}}"], "path": ["api","homeSlider",":id"], "variable": [{"key":"id","value":"SLIDER_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Create Slider (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/homeSlider", "host": ["{{baseUrl}}"], "path": ["api","homeSlider"] },
+            "body": { "mode": "raw", "raw": "{\n  \"image\": \"https://res.cloudinary.com/demo/image/upload/slider.jpg\",\n  \"title\": \"Beautiful Interiors\",\n  \"heading\": \"Design Your Space\",\n  \"subHeading\": \"Premium interior design solutions\",\n  \"isActive\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Slider (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/homeSlider/:id", "host": ["{{baseUrl}}"], "path": ["api","homeSlider",":id"], "variable": [{"key":"id","value":"SLIDER_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"heading\": \"New Heading\",\n  \"isActive\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Slider (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/homeSlider/:id", "host": ["{{baseUrl}}"], "path": ["api","homeSlider",":id"], "variable": [{"key":"id","value":"SLIDER_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Testimonials",
+      "item": [
+        {
+          "name": "Get All Testimonials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/testimonials?page=1&limit=10&isActive=true&sortBy=recent", "host": ["{{baseUrl}}"], "path": ["api","testimonials"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"isActive","value":"true"},{"key":"sortBy","value":"recent"},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Testimonial By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/testimonials/:id", "host": ["{{baseUrl}}"], "path": ["api","testimonials",":id"], "variable": [{"key":"id","value":"TESTIMONIAL_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Create Testimonial (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/testimonials", "host": ["{{baseUrl}}"], "path": ["api","testimonials"] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Amazing Work!\",\n  \"description\": \"They transformed our living room completely.\",\n  \"rating\": 5,\n  \"profileImage\": \"https://res.cloudinary.com/demo/image/upload/profile.jpg\",\n  \"isActive\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Testimonial (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/testimonials/:id", "host": ["{{baseUrl}}"], "path": ["api","testimonials",":id"], "variable": [{"key":"id","value":"TESTIMONIAL_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 4,\n  \"isActive\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Testimonial (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/testimonials/:id", "host": ["{{baseUrl}}"], "path": ["api","testimonials",":id"], "variable": [{"key":"id","value":"TESTIMONIAL_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "item": [
+        {
+          "name": "Get All Portfolios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/portfolio?page=1&limit=10&sortBy=recent&activeStatus=true", "host": ["{{baseUrl}}"], "path": ["api","portfolio"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"sortBy","value":"recent"},{"key":"activeStatus","value":"true"},{"key":"category","value":"","disabled":true},{"key":"featured","value":"","disabled":true},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Portfolio By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/portfolio/:id", "host": ["{{baseUrl}}"], "path": ["api","portfolio",":id"], "variable": [{"key":"id","value":"PORTFOLIO_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Get Portfolio By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/portfolio/slug/:slug", "host": ["{{baseUrl}}"], "path": ["api","portfolio","slug",":slug"], "variable": [{"key":"slug","value":"my-portfolio-slug"}] }
+          }
+        },
+        {
+          "name": "Create Portfolio (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/portfolio", "host": ["{{baseUrl}}"], "path": ["api","portfolio"] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Modern Villa Design\",\n  \"slug\": \"modern-villa-design\",\n  \"category\": \"Residential\",\n  \"clientName\": \"Mr. Sharma\",\n  \"location\": \"Mumbai\",\n  \"duration\": \"3 months\",\n  \"thumbnailImage\": \"https://res.cloudinary.com/demo/image/upload/thumb.jpg\",\n  \"bannerImage\": \"https://res.cloudinary.com/demo/image/upload/banner.jpg\",\n  \"shortDescription\": \"A luxury villa interior.\",\n  \"description\": \"Full project description here.\",\n  \"galleryImages\": [],\n  \"featured\": true,\n  \"activeStatus\": true,\n  \"order\": 1\n}" }
+          }
+        },
+        {
+          "name": "Update Portfolio (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/portfolio/:id", "host": ["{{baseUrl}}"], "path": ["api","portfolio",":id"], "variable": [{"key":"id","value":"PORTFOLIO_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Villa\",\n  \"featured\": false\n}" }
+          }
+        },
+        {
+          "name": "Delete Portfolio (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/portfolio/:id", "host": ["{{baseUrl}}"], "path": ["api","portfolio",":id"], "variable": [{"key":"id","value":"PORTFOLIO_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "item": [
+        {
+          "name": "Submit Contact Form (Public)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/contact", "host": ["{{baseUrl}}"], "path": ["api","contact"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ravi Kumar\",\n  \"email\": \"ravi@example.com\",\n  \"phone\": \"9876543210\",\n  \"subject\": \"Interior Design Query\",\n  \"message\": \"I want to know more about your services.\"\n}" }
+          }
+        },
+        {
+          "name": "Get All Contacts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contact?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["api","contact"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Contact By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contact/:id", "host": ["{{baseUrl}}"], "path": ["api","contact",":id"], "variable": [{"key":"id","value":"CONTACT_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Update Contact (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contact/:id", "host": ["{{baseUrl}}"], "path": ["api","contact",":id"], "variable": [{"key":"id","value":"CONTACT_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"isRead\": true\n}" }
+          }
+        },
+        {
+          "name": "Delete Contact (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contact/:id", "host": ["{{baseUrl}}"], "path": ["api","contact",":id"], "variable": [{"key":"id","value":"CONTACT_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Book Consultation",
+      "item": [
+        {
+          "name": "Book Consultation (Public)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/bookConslution", "host": ["{{baseUrl}}"], "path": ["api","bookConslution"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Priya Sharma\",\n  \"email\": \"priya@example.com\",\n  \"phone\": \"9876543210\",\n  \"date\": \"2026-08-15\",\n  \"slot\": \"10:00 AM - 11:00 AM\",\n  \"address\": \"123, MG Road, Mumbai\",\n  \"remarks\": \"Interested in living room redesign\"\n}" }
+          }
+        },
+        {
+          "name": "Get All Bookings (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookConslution?page=1&limit=10&sortBy=recent", "host": ["{{baseUrl}}"], "path": ["api","bookConslution"], "query": [{"key":"page","value":"1"},{"key":"limit","value":"10"},{"key":"sortBy","value":"recent"},{"key":"status","value":"","disabled":true},{"key":"search","value":"","disabled":true}] }
+          }
+        },
+        {
+          "name": "Get Booking By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookConslution/:id", "host": ["{{baseUrl}}"], "path": ["api","bookConslution",":id"], "variable": [{"key":"id","value":"BOOKING_ID_HERE"}] }
+          }
+        },
+        {
+          "name": "Update Booking (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookConslution/:id", "host": ["{{baseUrl}}"], "path": ["api","bookConslution",":id"], "variable": [{"key":"id","value":"BOOKING_ID_HERE"}] },
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"Confirmed\"\n}" }
+          }
+        },
+        {
+          "name": "Delete Booking (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookConslution/:id", "host": ["{{baseUrl}}"], "path": ["api","bookConslution",":id"], "variable": [{"key":"id","value":"BOOKING_ID_HERE"}] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/dashboard", "host": ["{{baseUrl}}"], "path": ["api","dashboard"] }
+          }
+        }
+      ]
+    }
+  ]
+}
