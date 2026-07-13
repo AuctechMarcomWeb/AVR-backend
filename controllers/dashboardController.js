@@ -1,87 +1,257 @@
 import Blog from "../models/Blog.modal.js";
-import Testimonials from "../models/Testimonials.modal.js";
-import HomeSlider from "../models/HomeSlider.modal.js";
-import Gallery from "../models/Gallery.modal.js";
+import BookConsultation from "../models/BookConsultation.modal.js";
+import Comment from "../models/Comment.modal.js";
 import ContactPage from "../models/ContactPage.modal.js";
+import Gallery from "../models/Gallery.modal.js";
+import HomeSlider from "../models/HomeSlider.modal.js";
+import Portfolio from "../models/Portfolio.modal.js";
+import Testimonials from "../models/Testimonials.modal.js";
+import User from "../models/User.modal.js";
 
-import { asyncHandler } from "../utils/asynchandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
+import { asyncHandler } from "../utils/asynchandler.js";
 
-// 🔹 GET CONTENT DASHBOARD STATS
-export const getDashboardStats = asyncHandler(async (req, res) => {
+// GET /api/dashboard
+const getDashboardStats = asyncHandler(async (req, res) => {
   try {
-    // 📝 Blogs Stats
-    const totalBlogs = await Blog.countDocuments();
-    const activeBlogs = await Blog.countDocuments({ isActive: true });
+    // Sirf Admin ke liye
+    // if (!req.user) {
+    //   return res
+    //     .status(401)
+    //     .json(new apiResponse(401, null, "Authentication required"));
+    // }
 
-    // ⭐ Testimonials Stats
-    const totalTestimonials = await Testimonials.countDocuments();
-    const activeTestimonials = await Testimonials.countDocuments({ isActive: true });
+    // if (req.user.role !== "Admin") {
+    //   return res
+    //     .status(403)
+    //     .json(new apiResponse(403, null, "Admin access required"));
+    // }
 
-    // 🖼️ Home Slider Stats
-    const totalSliders = await HomeSlider.countDocuments();
-    const activeSliders = await HomeSlider.countDocuments({ isActive: true });
+    const [
+      // Users
+      // totalUsers,
+      // activeUsers,
+      // inactiveUsers,
 
-    // 🖼️ Gallery Stats
-    const totalGalleryItems = await Gallery.countDocuments();
-    const activeGalleryItems = await Gallery.countDocuments({ isActive: true });
+      // Blogs
+      totalBlogs,
+      activeBlogs,
+      inactiveBlogs,
 
-    // 📩 Contact Page / Enquiry Stats
-    const totalContacts = await ContactPage.countDocuments();
-    // const unreadContacts = await ContactPage.countDocuments({ isRead: false });
+      // Portfolios
+      totalPortfolios,
+      activePortfolios,
+      inactivePortfolios,
 
-    // // 🔹 Recent Records (Optional – Dashboard UI ke liye)
-    // const recentBlogs = await Blog.find()
-    //   .sort({ createdAt: -1 })
-    //   .limit(5)
-    //   .select("title category isActive createdAt");
+      // Comments
+      // totalComments,
+      // activeComments,
+      // inactiveComments,
 
-    // const recentTestimonials = await Testimonials.find()
-    //   .sort({ createdAt: -1 })
-    //   .limit(5)
-    //   .select("title rating isActive createdAt");
+      // Gallery
+      totalGallery,
+      activeGallery,
+      inactiveGallery,
 
-    // const recentContacts = await ContactPage.find()
-    //   .sort({ createdAt: -1 })
-    //   .limit(5)
-    //   .select("name email subject isRead createdAt");
+      // Sliders
+      totalSliders,
+      activeSliders,
+      inactiveSliders,
 
-    res.status(200).json(
-      new apiResponse(
-        200,
-        {
-          blogs: {
-            totalBlogs,
-            activeBlogs,
-          },
-          testimonials: {
-            totalTestimonials,
-            activeTestimonials,
-          },
-          homeSliders: {
-            totalSliders,
-            activeSliders,
-          },
-          gallery: {
-            totalGalleryItems,
-            activeGalleryItems,
-          },
-          contacts: {
-            totalContacts,
-            // unreadContacts,
-          },
-        //   recentData: {
-        //     recentBlogs,
-        //     recentTestimonials,
-        //     recentContacts,
-        //   },
+      // Testimonials
+      // totalTestimonials,
+      // activeTestimonials,
+      // inactiveTestimonials,
+
+      // Consultations
+      totalConsultations,
+      readConsultations,
+      unreadConsultations,
+
+      // Contacts
+      totalContacts,
+      readContacts,
+      unreadContacts,
+
+      // Recent unread data
+      recentUnreadConsultations,
+      recentUnreadContacts,
+    ] = await Promise.all([
+      // =========================
+      // USERS
+      // =========================
+      // User.countDocuments(),
+      // User.countDocuments({ activeStatus: true }),
+      // User.countDocuments({ activeStatus: false }),
+
+      // =========================
+      // BLOGS
+      // =========================
+      Blog.countDocuments(),
+      Blog.countDocuments({ isActive: true }),
+      Blog.countDocuments({ isActive: false }),
+
+      // =========================
+      // PORTFOLIOS
+      // =========================
+      Portfolio.countDocuments(),
+      Portfolio.countDocuments({ activeStatus: true }),
+      Portfolio.countDocuments({ activeStatus: false }),
+
+      // =========================
+      // COMMENTS
+      // =========================
+      // Comment.countDocuments(),
+      // Comment.countDocuments({ isActive: true }),
+      // Comment.countDocuments({ isActive: false }),
+
+      // =========================
+      // GALLERY
+      // =========================
+      Gallery.countDocuments(),
+      Gallery.countDocuments({ isActive: true }),
+      Gallery.countDocuments({ isActive: false }),
+
+      // =========================
+      // HOME SLIDERS
+      // =========================
+      HomeSlider.countDocuments(),
+      HomeSlider.countDocuments({ isActive: true }),
+      HomeSlider.countDocuments({ isActive: false }),
+
+      // =========================
+      // TESTIMONIALS
+      // =========================
+      // Testimonials.countDocuments(),
+      // Testimonials.countDocuments({ isActive: true }),
+      // Testimonials.countDocuments({ isActive: false }),
+
+      // =========================
+      // CONSULTATIONS
+      // =========================
+      BookConsultation.countDocuments(),
+      BookConsultation.countDocuments({ isRead: true }),
+
+      // $ne true se old records bhi unread mein count honge
+      BookConsultation.countDocuments({
+        isRead: { $ne: true },
+      }),
+
+      // =========================
+      // CONTACTS
+      // =========================
+      ContactPage.countDocuments(),
+      ContactPage.countDocuments({ isRead: true }),
+
+      ContactPage.countDocuments({
+        isRead: { $ne: true },
+      }),
+
+      // =========================
+      // RECENT UNREAD CONSULTATIONS
+      // =========================
+      BookConsultation.find({
+        isRead: { $ne: true },
+      })
+        .select(
+          "name email phone date slot address remarks status isRead createdAt"
+        )
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+
+      // =========================
+      // RECENT UNREAD CONTACTS
+      // =========================
+      ContactPage.find({
+        isRead: { $ne: true },
+      })
+        .select("name email phone subject message isRead createdAt")
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+    ]);
+
+    const dashboardData = {
+      counts: {
+        // users: {
+        //   total: totalUsers,
+        //   active: activeUsers,
+        //   inactive: inactiveUsers,
+        // },
+
+        blogs: {
+          total: totalBlogs,
+          active: activeBlogs,
+          inactive: inactiveBlogs,
         },
-        "Dashboard Fetched Successfully"
-      )
-    );
+
+        portfolios: {
+          total: totalPortfolios,
+          active: activePortfolios,
+          inactive: inactivePortfolios,
+        },
+
+      
+        gallery: {
+          total: totalGallery,
+          active: activeGallery,
+          inactive: inactiveGallery,
+        },
+
+        sliders: {
+          total: totalSliders,
+          active: activeSliders,
+          inactive: inactiveSliders,
+        },
+
+        // testimonials: {
+        //   total: totalTestimonials,
+        //   active: activeTestimonials,
+        //   inactive: inactiveTestimonials,
+        // },
+
+        consultations: {
+          total: totalConsultations,
+          read: readConsultations,
+          unread: unreadConsultations,
+        },
+
+        contacts: {
+          total: totalContacts,
+          read: readContacts,
+          unread: unreadContacts,
+        },
+      },
+
+      recent: {
+        unreadConsultations: recentUnreadConsultations,
+        unreadContacts: recentUnreadContacts,
+      },
+    };
+
+    return res
+      .status(200)
+      .json(
+        new apiResponse(
+          200,
+          dashboardData,
+          "Dashboard data fetched successfully"
+        )
+      );
   } catch (error) {
-    res
+    console.error("Dashboard controller error:", error);
+
+    return res
       .status(500)
-      .json(new apiResponse(500, null, `Error: ${error.message}`));
+      .json(
+        new apiResponse(
+          500,
+          null,
+          error.message || "Failed to fetch dashboard data"
+        )
+      );
   }
 });
+
+export { getDashboardStats };
