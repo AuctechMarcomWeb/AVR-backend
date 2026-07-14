@@ -3,21 +3,19 @@ import {
   createBlog,
   getAllBlogs,
   getBlogById,
+  getBlogByUrl,
   updateBlog,
   deleteBlog,
 } from "../controllers/blogController.js";
-
 import { verifyJWT } from "../middlewares/authTypeMiddleware.js";
-
 const router = Router();
 
-// ✅ Public Routes
-router.get("/", getAllBlogs); // Get all blogs for frontend
-router.get("/:id", getBlogById); // Get single blog by ID
+router.get("/", getAllBlogs);
+router.get("/url/:url", getBlogByUrl);
+router.get("/:id", getBlogById);
 
-// ✅ Admin Routes (Protected)
-router.post("/", verifyJWT, createBlog); // Create a new blog
-router.put("/:id", verifyJWT, updateBlog); // Update a blog
-router.delete("/:id", verifyJWT, deleteBlog); // Delete a blog
+router.post("/", verifyJWT, createBlog);
+router.put("/:id", verifyJWT, updateBlog);
+router.delete("/:id", verifyJWT, deleteBlog);
 
 export default router;
