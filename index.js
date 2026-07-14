@@ -19,14 +19,36 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
-const clientUrl = process.env.CLIENT_URL;
+
+// ARV-backend/index.js
+const allowedOrigins = [
+  "http://localhost:5173",      // admin (React)
+  "http://localhost:5500",      // website (Live Server)
+  "http://127.0.0.1:5500",     // website (alternate)
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    // origin: clientUrl || "*",
-    origin: clientUrl || "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-  }),
+  })
 );
+
+// const clientUrl = process.env.CLIENT_URL;
+// app.use(
+//   cors({
+//     // origin: clientUrl || "*",
+//     origin: clientUrl || "http://localhost:5173",
+//     credentials: true,
+//   }),
+// );
 
 // app.use(express.json());
 app.use(express.json({ limit: "50mb" }));

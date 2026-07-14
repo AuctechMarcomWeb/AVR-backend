@@ -1,43 +1,40 @@
+import mongoose from "mongoose";
 import ContactPage from "../models/ContactPage.modal.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asynchandler.js";
-import mongoose from "mongoose";
 
 // CREATE CONTACT
 const createContactPage = asyncHandler(async (req, res) => {
   try {
-    const { name, email, phone, subject, message } = req.body;
+    const { name, email, phone, message } = req.body;
 
-    // 🔹 Validations
-    if (!name?.trim())
+    if (!name?.trim()) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Name is required"));
+    }
 
-    if (!email?.trim())
+    if (!email?.trim()) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Email is required"));
+    }
 
-    if (!phone?.trim())
+    if (!phone?.trim()) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Phone is required"));
+    }
 
-    if (!subject?.trim())
-      return res
-        .status(400)
-        .json(new apiResponse(400, null, "Subject is required"));
-
-    if (!message?.trim())
+    if (!message?.trim()) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Message is required"));
+    }
 
-    // 🔹 Duplicate Check (anti-spam logic)
+    // Duplicate check
     const existingContact = await ContactPage.findOne({
       email: email.trim().toLowerCase(),
-      subject: subject.trim(),
       message: message.trim(),
     });
 
@@ -47,12 +44,10 @@ const createContactPage = asyncHandler(async (req, res) => {
         .json(new apiResponse(409, null, "You have already sent this message"));
     }
 
-    // 🔹 Create Contact
     const contact = await ContactPage.create({
       name: name.trim(),
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
-      subject: subject.trim(),
       message: message.trim(),
     });
 
@@ -64,68 +59,78 @@ const createContactPage = asyncHandler(async (req, res) => {
   }
 });
 
-
-//GET ALL CONTACTS (Admin)
+// GET ALL CONTACTS
 const getAllContactPages = asyncHandler(async (req, res) => {
   try {
-    const { isPagination = "true", page = 1, limit = 10, search } = req.query;
+    const {
+      isPagination = "true",
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
+
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
 
     const match = {};
 
-    if (search) {
+    if (search?.trim()) {
       const regex = new RegExp(search.trim(), "i");
+
       match.$or = [
         { name: { $regex: regex } },
         { email: { $regex: regex } },
         { phone: { $regex: regex } },
-        { subject: { $regex: regex } },
+        { message: { $regex: regex } },
       ];
     }
 
-    let pipeline = [{ $match: match }, { $sort: { createdAt: -1 } }];
+    const total = await ContactPage.countDocuments(match);
 
-    const totalArr = await ContactPage.aggregate([
-      ...pipeline,
-      { $count: "count" },
-    ]);
-    const total = totalArr[0]?.count || 0;
+    let query = ContactPage.find(match).sort({ createdAt: -1 });
 
     if (isPagination === "true") {
-      pipeline.push(
-        { $skip: (page - 1) * Number(limit) },
-        { $limit: Number(limit) }
-      );
+      query = query
+        .skip((pageNumber - 1) * limitNumber)
+        .limit(limitNumber);
     }
 
-    const contacts = await ContactPage.aggregate(pipeline);
+    const contacts = await query;
 
-    res.status(200).json(
+    return res.status(200).json(
       new apiResponse(
         200,
         {
           contacts,
           totalContacts: total,
-          totalPages: Math.ceil(total / limit),
-          currentPage: Number(page),
+          totalPages:
+            isPagination === "true"
+              ? Math.ceil(total / limitNumber)
+              : total > 0
+                ? 1
+                : 0,
+          currentPage: pageNumber,
         },
         "Contacts fetched successfully"
       )
     );
   } catch (error) {
-    res.status(500).json(new apiResponse(500, null, error.message));
+    return res.status(500).json(new apiResponse(500, null, error.message));
   }
 });
 
-//GET SINGLE CONTACT
+// GET SINGLE CONTACT
 const getContactPageById = asyncHandler(async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Invalid contact ID"));
     }
 
-    const contact = await ContactPage.findById(req.params.id);
+    const contact = await ContactPage.findById(id);
 
     if (!contact) {
       return res
@@ -133,28 +138,39 @@ const getContactPageById = asyncHandler(async (req, res) => {
         .json(new apiResponse(404, null, "Contact not found"));
     }
 
-    res
+    return res
       .status(200)
       .json(new apiResponse(200, contact, "Contact fetched successfully"));
   } catch (error) {
-    res.status(500).json(new apiResponse(500, null, error.message));
+    return res.status(500).json(new apiResponse(500, null, error.message));
   }
 });
 
-//UPDATE CONTACT
+// UPDATE CONTACT
 const updateContactPage = asyncHandler(async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Invalid contact ID"));
     }
 
-    const updatedContact = await ContactPage.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const allowedFields = ["name", "email", "phone", "message", "isRead"];
+
+    const updateData = {};
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    const updatedContact = await ContactPage.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedContact) {
       return res
@@ -162,26 +178,28 @@ const updateContactPage = asyncHandler(async (req, res) => {
         .json(new apiResponse(404, null, "Contact not found"));
     }
 
-    res
+    return res
       .status(200)
       .json(
         new apiResponse(200, updatedContact, "Contact updated successfully")
       );
   } catch (error) {
-    res.status(500).json(new apiResponse(500, null, error.message));
+    return res.status(500).json(new apiResponse(500, null, error.message));
   }
 });
 
 // DELETE CONTACT
 const deleteContactPage = asyncHandler(async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
         .json(new apiResponse(400, null, "Invalid contact ID"));
     }
 
-    const deletedContact = await ContactPage.findByIdAndDelete(req.params.id);
+    const deletedContact = await ContactPage.findByIdAndDelete(id);
 
     if (!deletedContact) {
       return res
@@ -189,13 +207,13 @@ const deleteContactPage = asyncHandler(async (req, res) => {
         .json(new apiResponse(404, null, "Contact not found"));
     }
 
-    res
+    return res
       .status(200)
       .json(
         new apiResponse(200, deletedContact, "Contact deleted successfully")
       );
   } catch (error) {
-    res.status(500).json(new apiResponse(500, null, error.message));
+    return res.status(500).json(new apiResponse(500, null, error.message));
   }
 });
 

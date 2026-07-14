@@ -21,19 +21,12 @@ const contactPageSchema = new mongoose.Schema(
       trim: true,
     },
 
-    subject: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     message: {
       type: String,
       required: true,
       trim: true,
     },
 
-    // optional – admin side ke liye useful
     isRead: {
       type: Boolean,
       default: false,
