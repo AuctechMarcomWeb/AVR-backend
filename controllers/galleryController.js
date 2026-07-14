@@ -11,7 +11,7 @@ const createGallery = asyncHandler(async (req, res) => {
     if (!url || url.trim() === "") {
       return res
         .status(400)
-        .json(new apiResponse(400, null, "Image URL is required to create a gallery item"));
+        .json(new apiResponse(400, null, "Image  required to create a gallery"));
     }
 
     const existing = await Gallery.findOne({ url: url.trim() });
