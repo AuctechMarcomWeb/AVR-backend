@@ -22,10 +22,10 @@ const app = express();
 
 // ARV-backend/index.js
 // const allowedOrigins = [
-//   "http://localhost:5173",      // admin (React)
-//   "http://localhost:5500",      // website (Live Server)
-//   "http://127.0.0.1:5500",     // website (alternate)
-//   process.env.CLIENT_URL || *,
+//   "http://localhost:5173", // admin (React)
+//   "http://localhost:5500", // website (Live Server)
+//   "http://127.0.0.1:5500", // website (alternate)
+//   process.env.CLIENT_URL,
 // ].filter(Boolean);
 
 // app.use(
@@ -38,7 +38,7 @@ const app = express();
 //       }
 //     },
 //     credentials: true,
-//   })
+//   }),
 // );
 
 const clientUrl = process.env.CLIENT_URL;

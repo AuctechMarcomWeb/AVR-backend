@@ -53,7 +53,7 @@ const bookConsultationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Cancelled"],
+      enum: ["Pending","Completed", "Confirmed", "Cancelled"],
       default: "Pending",
     },
   },
